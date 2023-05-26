@@ -1,0 +1,1284 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "rw5Zu5JJXKGJ"
+      },
+      "source": [
+        "*Importing the required libraries*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 62,
+      "metadata": {
+        "id": "SvwnVK6X9ylR"
+      },
+      "outputs": [],
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np \n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import plotly.express as px\n",
+        "import warnings\n",
+        "warnings.filterwarnings('ignore')\n",
+        "%matplotlib inline"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "kqtWbykYYHSb"
+      },
+      "source": [
+        "*Importing the dataset*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 31,
+      "metadata": {
+        "id": "AcXmVA8VYKqH"
+      },
+      "outputs": [],
+      "source": [
+        "data = pd.read_csv(\"Unemployment in India.csv\")\n",
+        "data = pd.read_csv(\"Unemployment_Rate_upto_11_2020.csv\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "ucl1yfA7Yo_9"
+      },
+      "source": [
+        "Show top five records"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 32,
+      "metadata": {
+        "id": "CP0pZWZGYseX",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 354
+        },
+        "outputId": "c80a7218-1558-4653-f067-5477e3164155"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "           Region         Date  Frequency   Estimated Unemployment Rate (%)  \\\n",
+              "0  Andhra Pradesh   31-01-2020          M                              5.48   \n",
+              "1  Andhra Pradesh   29-02-2020          M                              5.83   \n",
+              "2  Andhra Pradesh   31-03-2020          M                              5.79   \n",
+              "3  Andhra Pradesh   30-04-2020          M                             20.51   \n",
+              "4  Andhra Pradesh   31-05-2020          M                             17.43   \n",
+              "\n",
+              "    Estimated Employed   Estimated Labour Participation Rate (%) Region.1  \\\n",
+              "0             16635535                                     41.02    South   \n",
+              "1             16545652                                     40.90    South   \n",
+              "2             15881197                                     39.18    South   \n",
+              "3             11336911                                     33.10    South   \n",
+              "4             12988845                                     36.46    South   \n",
+              "\n",
+              "   longitude  latitude  \n",
+              "0    15.9129     79.74  \n",
+              "1    15.9129     79.74  \n",
+              "2    15.9129     79.74  \n",
+              "3    15.9129     79.74  \n",
+              "4    15.9129     79.74  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-f987869e-6ec1-45cd-b1c8-9904c1e96469\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>Region</th>\n",
+              "      <th>Date</th>\n",
+              "      <th>Frequency</th>\n",
+              "      <th>Estimated Unemployment Rate (%)</th>\n",
+              "      <th>Estimated Employed</th>\n",
+              "      <th>Estimated Labour Participation Rate (%)</th>\n",
+              "      <th>Region.1</th>\n",
+              "      <th>longitude</th>\n",
+              "      <th>latitude</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>31-01-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>5.48</td>\n",
+              "      <td>16635535</td>\n",
+              "      <td>41.02</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>29-02-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>5.83</td>\n",
+              "      <td>16545652</td>\n",
+              "      <td>40.90</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>31-03-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>5.79</td>\n",
+              "      <td>15881197</td>\n",
+              "      <td>39.18</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>30-04-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>20.51</td>\n",
+              "      <td>11336911</td>\n",
+              "      <td>33.10</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>31-05-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>17.43</td>\n",
+              "      <td>12988845</td>\n",
+              "      <td>36.46</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-f987869e-6ec1-45cd-b1c8-9904c1e96469')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-f987869e-6ec1-45cd-b1c8-9904c1e96469 button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-f987869e-6ec1-45cd-b1c8-9904c1e96469');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 32
+        }
+      ],
+      "source": [
+        "data.head()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Ftxl4507Y60G"
+      },
+      "source": [
+        "*Show last five records*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 33,
+      "metadata": {
+        "id": "H2y9CEMlY_Fx",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 354
+        },
+        "outputId": "7cb66a99-fd27-4b06-fbf3-25768fd70b76"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "          Region         Date  Frequency   Estimated Unemployment Rate (%)  \\\n",
+              "262  West Bengal   30-06-2020          M                              7.29   \n",
+              "263  West Bengal   31-07-2020          M                              6.83   \n",
+              "264  West Bengal   31-08-2020          M                             14.87   \n",
+              "265  West Bengal   30-09-2020          M                              9.35   \n",
+              "266  West Bengal   31-10-2020          M                              9.98   \n",
+              "\n",
+              "      Estimated Employed   Estimated Labour Participation Rate (%) Region.1  \\\n",
+              "262             30726310                                     40.39     East   \n",
+              "263             35372506                                     46.17     East   \n",
+              "264             33298644                                     47.48     East   \n",
+              "265             35707239                                     47.73     East   \n",
+              "266             33962549                                     45.63     East   \n",
+              "\n",
+              "     longitude  latitude  \n",
+              "262    22.9868    87.855  \n",
+              "263    22.9868    87.855  \n",
+              "264    22.9868    87.855  \n",
+              "265    22.9868    87.855  \n",
+              "266    22.9868    87.855  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-132f8271-682e-4e9f-a7e4-9198b5b992af\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>Region</th>\n",
+              "      <th>Date</th>\n",
+              "      <th>Frequency</th>\n",
+              "      <th>Estimated Unemployment Rate (%)</th>\n",
+              "      <th>Estimated Employed</th>\n",
+              "      <th>Estimated Labour Participation Rate (%)</th>\n",
+              "      <th>Region.1</th>\n",
+              "      <th>longitude</th>\n",
+              "      <th>latitude</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>262</th>\n",
+              "      <td>West Bengal</td>\n",
+              "      <td>30-06-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>7.29</td>\n",
+              "      <td>30726310</td>\n",
+              "      <td>40.39</td>\n",
+              "      <td>East</td>\n",
+              "      <td>22.9868</td>\n",
+              "      <td>87.855</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>263</th>\n",
+              "      <td>West Bengal</td>\n",
+              "      <td>31-07-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>6.83</td>\n",
+              "      <td>35372506</td>\n",
+              "      <td>46.17</td>\n",
+              "      <td>East</td>\n",
+              "      <td>22.9868</td>\n",
+              "      <td>87.855</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>264</th>\n",
+              "      <td>West Bengal</td>\n",
+              "      <td>31-08-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>14.87</td>\n",
+              "      <td>33298644</td>\n",
+              "      <td>47.48</td>\n",
+              "      <td>East</td>\n",
+              "      <td>22.9868</td>\n",
+              "      <td>87.855</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>265</th>\n",
+              "      <td>West Bengal</td>\n",
+              "      <td>30-09-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>9.35</td>\n",
+              "      <td>35707239</td>\n",
+              "      <td>47.73</td>\n",
+              "      <td>East</td>\n",
+              "      <td>22.9868</td>\n",
+              "      <td>87.855</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>266</th>\n",
+              "      <td>West Bengal</td>\n",
+              "      <td>31-10-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>9.98</td>\n",
+              "      <td>33962549</td>\n",
+              "      <td>45.63</td>\n",
+              "      <td>East</td>\n",
+              "      <td>22.9868</td>\n",
+              "      <td>87.855</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-132f8271-682e-4e9f-a7e4-9198b5b992af')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-132f8271-682e-4e9f-a7e4-9198b5b992af button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-132f8271-682e-4e9f-a7e4-9198b5b992af');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 33
+        }
+      ],
+      "source": [
+        "data.tail()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 34,
+      "metadata": {
+        "id": "G23WBrb9ZEH8",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "c71ed434-90db-4153-f48d-ce2998d059cb"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Index(['Region', ' Date', ' Frequency', ' Estimated Unemployment Rate (%)',\n",
+              "       ' Estimated Employed', ' Estimated Labour Participation Rate (%)',\n",
+              "       'Region.1', 'longitude', 'latitude'],\n",
+              "      dtype='object')"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 34
+        }
+      ],
+      "source": [
+        "#to print columns\n",
+        "data.columns"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 35,
+      "metadata": {
+        "id": "W6cabUNTZPvA"
+      },
+      "outputs": [],
+      "source": [
+        "#rename the columns \n",
+        "data.columns = ['States','Date','Frequency','Estimated Unemployment Rate','Estimated Employed','Estimated Labour Participation Rate','Region','longitude','latitude']"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 36,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lnSOlP7HZ3sl",
+        "outputId": "fecc11cf-fecb-41d2-a582-8c1778db7850"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Index(['States', 'Date', 'Frequency', 'Estimated Unemployment Rate',\n",
+              "       'Estimated Employed', 'Estimated Labour Participation Rate', 'Region',\n",
+              "       'longitude', 'latitude'],\n",
+              "      dtype='object')"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 36
+        }
+      ],
+      "source": [
+        "data.columns"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 37,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 354
+        },
+        "id": "aqTZOlRSZ2n6",
+        "outputId": "c1bc2934-573b-4a87-b5ce-e02b1d0e6232"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "           States         Date Frequency  Estimated Unemployment Rate  \\\n",
+              "0  Andhra Pradesh   31-01-2020         M                         5.48   \n",
+              "1  Andhra Pradesh   29-02-2020         M                         5.83   \n",
+              "2  Andhra Pradesh   31-03-2020         M                         5.79   \n",
+              "3  Andhra Pradesh   30-04-2020         M                        20.51   \n",
+              "4  Andhra Pradesh   31-05-2020         M                        17.43   \n",
+              "\n",
+              "   Estimated Employed  Estimated Labour Participation Rate Region  longitude  \\\n",
+              "0            16635535                                41.02  South    15.9129   \n",
+              "1            16545652                                40.90  South    15.9129   \n",
+              "2            15881197                                39.18  South    15.9129   \n",
+              "3            11336911                                33.10  South    15.9129   \n",
+              "4            12988845                                36.46  South    15.9129   \n",
+              "\n",
+              "   latitude  \n",
+              "0     79.74  \n",
+              "1     79.74  \n",
+              "2     79.74  \n",
+              "3     79.74  \n",
+              "4     79.74  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-7e1c5b1b-aabd-4b91-bdcb-bdbef7f6e2f8\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>States</th>\n",
+              "      <th>Date</th>\n",
+              "      <th>Frequency</th>\n",
+              "      <th>Estimated Unemployment Rate</th>\n",
+              "      <th>Estimated Employed</th>\n",
+              "      <th>Estimated Labour Participation Rate</th>\n",
+              "      <th>Region</th>\n",
+              "      <th>longitude</th>\n",
+              "      <th>latitude</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>31-01-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>5.48</td>\n",
+              "      <td>16635535</td>\n",
+              "      <td>41.02</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>29-02-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>5.83</td>\n",
+              "      <td>16545652</td>\n",
+              "      <td>40.90</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>31-03-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>5.79</td>\n",
+              "      <td>15881197</td>\n",
+              "      <td>39.18</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>30-04-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>20.51</td>\n",
+              "      <td>11336911</td>\n",
+              "      <td>33.10</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>Andhra Pradesh</td>\n",
+              "      <td>31-05-2020</td>\n",
+              "      <td>M</td>\n",
+              "      <td>17.43</td>\n",
+              "      <td>12988845</td>\n",
+              "      <td>36.46</td>\n",
+              "      <td>South</td>\n",
+              "      <td>15.9129</td>\n",
+              "      <td>79.74</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-7e1c5b1b-aabd-4b91-bdcb-bdbef7f6e2f8')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-7e1c5b1b-aabd-4b91-bdcb-bdbef7f6e2f8 button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-7e1c5b1b-aabd-4b91-bdcb-bdbef7f6e2f8');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 37
+        }
+      ],
+      "source": [
+        "data.head()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "asuXPG2gaENj"
+      },
+      "source": [
+        "*Shape of the dataset*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 38,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "whSYIYhtaCF5",
+        "outputId": "0f025be2-8972-480e-d7ab-0fbd05f4e7b5"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(267, 9)"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 38
+        }
+      ],
+      "source": [
+        "data.shape"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Qflc5_O3aaOJ"
+      },
+      "source": [
+        "*Summary of the dataset*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 39,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "Rgry707iadKY",
+        "outputId": "d420bec7-e110-44e9-e1c1-76ab72da2d5d"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                     count          mean           std  \\\n",
+              "Estimated Unemployment Rate          267.0  1.223693e+01  1.080328e+01   \n",
+              "Estimated Employed                   267.0  1.396211e+07  1.336632e+07   \n",
+              "Estimated Labour Participation Rate  267.0  4.168157e+01  7.845419e+00   \n",
+              "longitude                            267.0  2.282605e+01  6.270731e+00   \n",
+              "latitude                             267.0  8.053242e+01  5.831738e+00   \n",
+              "\n",
+              "                                             min           25%           50%  \\\n",
+              "Estimated Unemployment Rate               0.5000  4.845000e+00  9.650000e+00   \n",
+              "Estimated Employed                   117542.0000  2.838930e+06  9.732417e+06   \n",
+              "Estimated Labour Participation Rate      16.7700  3.726500e+01  4.039000e+01   \n",
+              "longitude                                10.8505  1.811240e+01  2.361020e+01   \n",
+              "latitude                                 71.1924  7.608560e+01  7.901930e+01   \n",
+              "\n",
+              "                                              75%           max  \n",
+              "Estimated Unemployment Rate          1.675500e+01  7.585000e+01  \n",
+              "Estimated Employed                   2.187869e+07  5.943376e+07  \n",
+              "Estimated Labour Participation Rate  4.405500e+01  6.969000e+01  \n",
+              "longitude                            2.727840e+01  3.377820e+01  \n",
+              "latitude                             8.527990e+01  9.293760e+01  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-3e799cf5-a233-4086-8b32-86af32528b12\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>count</th>\n",
+              "      <th>mean</th>\n",
+              "      <th>std</th>\n",
+              "      <th>min</th>\n",
+              "      <th>25%</th>\n",
+              "      <th>50%</th>\n",
+              "      <th>75%</th>\n",
+              "      <th>max</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>Estimated Unemployment Rate</th>\n",
+              "      <td>267.0</td>\n",
+              "      <td>1.223693e+01</td>\n",
+              "      <td>1.080328e+01</td>\n",
+              "      <td>0.5000</td>\n",
+              "      <td>4.845000e+00</td>\n",
+              "      <td>9.650000e+00</td>\n",
+              "      <td>1.675500e+01</td>\n",
+              "      <td>7.585000e+01</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>Estimated Employed</th>\n",
+              "      <td>267.0</td>\n",
+              "      <td>1.396211e+07</td>\n",
+              "      <td>1.336632e+07</td>\n",
+              "      <td>117542.0000</td>\n",
+              "      <td>2.838930e+06</td>\n",
+              "      <td>9.732417e+06</td>\n",
+              "      <td>2.187869e+07</td>\n",
+              "      <td>5.943376e+07</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>Estimated Labour Participation Rate</th>\n",
+              "      <td>267.0</td>\n",
+              "      <td>4.168157e+01</td>\n",
+              "      <td>7.845419e+00</td>\n",
+              "      <td>16.7700</td>\n",
+              "      <td>3.726500e+01</td>\n",
+              "      <td>4.039000e+01</td>\n",
+              "      <td>4.405500e+01</td>\n",
+              "      <td>6.969000e+01</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>longitude</th>\n",
+              "      <td>267.0</td>\n",
+              "      <td>2.282605e+01</td>\n",
+              "      <td>6.270731e+00</td>\n",
+              "      <td>10.8505</td>\n",
+              "      <td>1.811240e+01</td>\n",
+              "      <td>2.361020e+01</td>\n",
+              "      <td>2.727840e+01</td>\n",
+              "      <td>3.377820e+01</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>latitude</th>\n",
+              "      <td>267.0</td>\n",
+              "      <td>8.053242e+01</td>\n",
+              "      <td>5.831738e+00</td>\n",
+              "      <td>71.1924</td>\n",
+              "      <td>7.608560e+01</td>\n",
+              "      <td>7.901930e+01</td>\n",
+              "      <td>8.527990e+01</td>\n",
+              "      <td>9.293760e+01</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-3e799cf5-a233-4086-8b32-86af32528b12')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-3e799cf5-a233-4086-8b32-86af32528b12 button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-3e799cf5-a233-4086-8b32-86af32528b12');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 39
+        }
+      ],
+      "source": [
+        "#Display summary statistics for a dataset\n",
+        "data.describe().T"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "x4Au2n57aveO"
+      },
+      "source": [
+        "*Check the Datatypes in the dataset*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 40,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yOZlhOSrazg-",
+        "outputId": "0b182711-c82e-4cd8-a551-0dbbf8f92d41"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 267 entries, 0 to 266\n",
+            "Data columns (total 9 columns):\n",
+            " #   Column                               Non-Null Count  Dtype  \n",
+            "---  ------                               --------------  -----  \n",
+            " 0   States                               267 non-null    object \n",
+            " 1   Date                                 267 non-null    object \n",
+            " 2   Frequency                            267 non-null    object \n",
+            " 3   Estimated Unemployment Rate          267 non-null    float64\n",
+            " 4   Estimated Employed                   267 non-null    int64  \n",
+            " 5   Estimated Labour Participation Rate  267 non-null    float64\n",
+            " 6   Region                               267 non-null    object \n",
+            " 7   longitude                            267 non-null    float64\n",
+            " 8   latitude                             267 non-null    float64\n",
+            "dtypes: float64(4), int64(1), object(4)\n",
+            "memory usage: 18.9+ KB\n"
+          ]
+        }
+      ],
+      "source": [
+        "#checking the null and dtypes in the dataset\n",
+        "data.info()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 41,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "YXPCgLg6ivw5",
+        "outputId": "858af4d2-5b00-46c7-cf75-a509fffbd786"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 41
+        }
+      ],
+      "source": [
+        "data.isnull().sum().sum()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "oC0giKiybf1o"
+      },
+      "source": [
+        "#*EXPLORING DATA*"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 42,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "EPlCGideblZg",
+        "outputId": "5c94257f-8443-4d94-a779-c69885002a1c"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "we have 5 numerical features : ['Estimated Unemployment Rate', 'Estimated Employed', 'Estimated Labour Participation Rate', 'longitude', 'latitude']\n",
+            "we have 4 categorical features : ['States', 'Date', 'Frequency', 'Region']\n"
+          ]
+        }
+      ],
+      "source": [
+        "#define numerical and categorical columns\n",
+        "numeric_features = [feature for feature in data.columns if data[feature].dtype != 'O']\n",
+        "categorical_features = [feature for feature in data.columns if data[feature].dtype == 'O']\n",
+        "\n",
+        "#print columns\n",
+        "print(\"we have {} numerical features : {}\".format(len(numeric_features),numeric_features))\n",
+        "print(\"we have {} categorical features : {}\".format(len(categorical_features),categorical_features))"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 43,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "e7w9meTJdBG9",
+        "outputId": "0d9463cd-30e7-4496-a110-a348eca08387"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Andhra Pradesh      3.745318\n",
+            "Assam               3.745318\n",
+            "Uttarakhand         3.745318\n",
+            "Uttar Pradesh       3.745318\n",
+            "Tripura             3.745318\n",
+            "Telangana           3.745318\n",
+            "Tamil Nadu          3.745318\n",
+            "Rajasthan           3.745318\n",
+            "Punjab              3.745318\n",
+            "Puducherry          3.745318\n",
+            "Odisha              3.745318\n",
+            "Meghalaya           3.745318\n",
+            "Maharashtra         3.745318\n",
+            "Madhya Pradesh      3.745318\n",
+            "Kerala              3.745318\n",
+            "Karnataka           3.745318\n",
+            "Jharkhand           3.745318\n",
+            "Himachal Pradesh    3.745318\n",
+            "Haryana             3.745318\n",
+            "Gujarat             3.745318\n",
+            "Goa                 3.745318\n",
+            "Delhi               3.745318\n",
+            "Chhattisgarh        3.745318\n",
+            "Bihar               3.745318\n",
+            "West Bengal         3.745318\n",
+            "Jammu & Kashmir     3.370787\n",
+            "Sikkim              2.996255\n",
+            "Name: States, dtype: float64\n",
+            "-------------------------------\n",
+            " 31-03-2020    10.112360\n",
+            " 31-05-2020    10.112360\n",
+            " 30-06-2020    10.112360\n",
+            " 31-07-2020    10.112360\n",
+            " 31-08-2020    10.112360\n",
+            " 30-09-2020    10.112360\n",
+            " 31-10-2020    10.112360\n",
+            " 31-01-2020     9.737828\n",
+            " 29-02-2020     9.737828\n",
+            " 30-04-2020     9.737828\n",
+            "Name: Date, dtype: float64\n",
+            "-------------------------------\n",
+            " M    100.0\n",
+            "Name: Frequency, dtype: float64\n",
+            "-------------------------------\n",
+            "North        29.588015\n",
+            "South        22.471910\n",
+            "West         18.726592\n",
+            "East         14.981273\n",
+            "Northeast    14.232210\n",
+            "Name: Region, dtype: float64\n",
+            "-------------------------------\n"
+          ]
+        }
+      ],
+      "source": [
+        "#proportion of count data on categorical columns\n",
+        "for col in categorical_features:\n",
+        "  print(data[col].value_counts(normalize=True) * 100)\n",
+        "  print('-------------------------------')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "JVB3DEtAdmhb"
+      },
+      "source": [
+        "#*UNIVARIATE ANALYSIS*\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Q3yJCO9UdvR8"
+      },
+      "source": [
+        "Numerical Features"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 44,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 495
+        },
+        "id": "b-E_oaqkdtJS",
+        "outputId": "be3adc15-2710-4a91-9dbf-57d61f975e7d"
+      },
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 1080x1080 with 5 Axes>"
+            ],
+            "image/png": "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UwJDRERERERERPKeEhgiIiIiIiIikveUwBARERERERGRvKcEhoiIiIiIiIjkPSUwRERERERERCTvKYEhIiIiIiIiInlPCQwRERERERERyXtKYIiIiIiIiIhI3lMCQ0RERERERETynhIYIiKScWZ2p5l9bWZTMrS9v5nZVDObbmb/MjPLxHZFREREpHAogSEiItlwN3BoJjZkZgOAPYE+QG9gV2DfTGxbRERERAqHEhgiIpJx7v4GsCB5mZl1NbPnzWysmb1pZtvVdnNAc6Ap0AxoAnyV0YBFREREJO8pgSEiIrkyDLjA3XcBLgb+U5sHufu7wKvAF9FllLtPz1qUIiIiIpKXGscdgIiIFD8zawkMAB5LKl/RLLrvGOCqNA/7zN1/ZGbdgO2BDtHyF81sb3d/M8thi4iIiEgeUQJDRERyoRGwyN37pt7h7k8CT1bz2KOB99x9KYCZPQfsASiBISIiIlJCNIRERESyzt2XALPN7DgAC3as5cM/AfY1s8Zm1oRQwFNDSERERERKjBIYIiKScWb2EPAusK2ZzTWzM4GTgTPNbCIwFRhcy809DswEJgMTgYnu/kwWwhYRERGRPGbuHncMIiIiIiIiIiLVUg8MEREREREREcl7RVPEc9NNN/XOnTvHHYaISK2NHTv2G3dvF3ccmab2WEQKidpiEZH8UJv2uGgSGJ07d6a8vDzuMEREas3MPo47hmxQeywihURtsYhIfqhNe6whJCIiIiIiIiKS95TAEBEREREREZG8pwSGiIiIiIiIiOQ9JTBERERERHLAzA41sxlmVmFml6W5v5mZPRLdP9rMOkfLTzazCUmXdWbWN9fxi4jETQkMEREREZEsM7My4GZgINATONHMeqasdiaw0N27AdcD1wK4+wPu3tfd+wI/Bma7+4RcxS4iki+UwChA69aFi4iI5L+1a2Hp0vBXREpaf6DC3We5+yrgYWBwyjqDgXui648DB5qZpaxzYvRYkXpbtQrc445CpO6UwCgwTz8N3bpBmzZw+umwfHncEYmISDqrV8OVV0KHDtCuHbRqBWedBXPnxh2ZiMSkPfBp0u250bK067j7GmAx0DZlnROAh9I9gZmdY2blZlY+b968jAQtxWXEiPC71KIF7LQTvPJK3BGJ1E1WExgNGOfX2cyWJ43zuyWbcRaKN96As8+G886DO+6Azz+Hww5T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
